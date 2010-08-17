@@ -1,0 +1,17 @@
+ToDo:
+	- write GoogleDocs api wrapper
+	- write SVN api wrapper
+	- write CLI
+
+Design Rationale:
+	Observations on GoogleDocs/traditional-file-system concept mismatch:
+		-	the unix/windows/macOs file system is a tree structure (ignoring links)
+		-	GoogleDocs uses categories for a relational model, 
+			i.e. googleDocs files form a directed acyclic graph (DAG).
+		-	consequence: 
+				since we have to store the files on a file system we have to simplify the DAG model of GoogleDocs.
+				Luckily all the nodes of a DAG visited in a depth first search (DFS) form a tree.
+				So the files saved to the SVN repo from google docs will be the result of traversing a users GoogleDocs
+				categories/folders depth-first from a user defined start node.
+
+
