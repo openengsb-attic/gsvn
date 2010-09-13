@@ -1,16 +1,24 @@
-import sys
+import cli
 import docs
 
-googleUsername = sys.argv[1]
-googlePassword = sys.argv[2]
-googleRootPath = sys.argv[3]
+# parse command line arguments
+args = cli.parseArguments()
 
-svnUsername    = ''
-svnPassword    = ''
-svnRootPath    = sys.argv[4]
+# connect to google docs
+googleDocs = docs.DocumentService( args.gDocsUsername, args.gDocsPassword )
 
-googleDocs = docs.DocumentService( googleUsername, googlePassword )
+# fetch documents
+if args.gDocsRoot == None:
+	files = googleDocs.getRoot()
+else:
+	files = googleDocs.getFile( args.gDocsRoot )
 
-googleDocs.saveTo( googleDocs.getFile( googleRootPath ), svnRootPath )
+# save to repo
+if args.svnRoot == None:
+	googleDocs.saveTo( files, "." )
+else:
+	googleDocs.saveTo( files, args.svnRoot )
+
+# commit to svn
 
 

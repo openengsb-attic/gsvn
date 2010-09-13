@@ -1,17 +1,20 @@
 Usage:
-	gsvn googleDocsUsername googleDocsPassword googleDocsRootFolder targetFolder
+	gsvn googleDocsUsername googleDocsPassword googleDocsRootFolder svnUsername svnPassword svnRootFolder
 
 		googleDocsUsername		email address of the google user account
 		googleDocsPassword		password of the google user account
 		googleDocsRootFolder	name of the root of the file tree to copy fetch from google docs
-		targetFolder			path to directory into which the google doc file tree shall be copied into
+
+		svnUsername				username for svn repo authentication
+		svnPassword				password for svn repo authentication
+		svnRootFolder			path to directory into which the google doc file tree shall be copied into
 
 ToDo:
 	- write GoogleDocs api wrapper
 		- error handling code
 		- logging
 		- check function arguments
-		- documentation
+		- even more documentation
 	- write SVN api wrapper
 		- commit logic
 		- error handling code
@@ -19,11 +22,7 @@ ToDo:
 		- check function arguments
 		- documentation
 	- write proper CLI with argument parsing
-		- proper command line argument parsing (getopt)
-		- error handling code
-		- logging
-		- check function arguments
-		- documentation
+		- even more documentation
 
 Dependencies:
 	- you have to have the Google List Data Python API 3.0 on your PYTHONPATH

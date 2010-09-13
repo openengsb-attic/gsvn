@@ -26,6 +26,11 @@ class DocumentService(object):
 
 		return self.__query( query )
 
+	def getRoot( self ):
+		""" Query for the root folder of google docs. """
+	
+
+
 	def getFile( self, name ):
 		""" Query for a file by name.
 			If no such file exists return None. 
@@ -80,7 +85,8 @@ class DocumentService(object):
 	def __isFolder( doc ):
 		""" Check if a given entry is a folder. """
 
-		return len( filter( lambda x: x.label == 'folder', doc.category ) ) >  0
+		# a doc is a folder if it's category list contains folder
+		return 'folder' in doc.category
 
 	@staticmethod
 	def __toName( obj ):
