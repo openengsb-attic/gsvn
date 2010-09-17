@@ -1,4 +1,6 @@
 import gdata.docs.service
+import gdata.docs.data
+import gdata.docs.client
 import os
 import os.path
 
@@ -12,14 +14,14 @@ class DocumentService(object):
 
 		# Create a client which will make HTTP requests with Google Docs server.
 		self.__googleDocsClient = gdata.docs.service.DocsService()
+	
 		# Authenticate using your Google Docs email address and password.
 		self.__googleDocsClient.ClientLogin( email, password )
 
 	def getAllFiles( self ):
 		""" Get a list of all files accessible by the user this service corresponds to. 
 
-			returns	a list of google docs entry objects
-		"""
+			returns	a list of google docs entry objects	"""
 
 		query = gdata.docs.service.DocumentQuery()
 		query['showfolders'] = 'true'
@@ -27,9 +29,9 @@ class DocumentService(object):
 		return self.__query( query )
 
 	def getRoot( self ):
-		""" Query for the root folder of google docs. """
+		""" Query for the contents of the root folder of google docs. """
 	
-
+		return self.__googleDocsClient.Query( '/feeds/default/private/full/folder%3Aroot/contents/' ).entry
 
 	def getFile( self, name ):
 		""" Query for a file by name.
@@ -72,7 +74,7 @@ class DocumentService(object):
 			for file in self.getChildren( doc ):
 				self.saveTo( file, docPath )
 		else:
-			self.__googleDocsClient.Download( doc, docPath )
+			self.__googleDocsClient.Export( doc, docPath )
 		
 	## HELPERS
 
@@ -85,8 +87,11 @@ class DocumentService(object):
 	def __isFolder( doc ):
 		""" Check if a given entry is a folder. """
 
+		# get list of names of categories the doc is in
+		categories = map( lambda x: x.label, doc.category )
+
 		# a doc is a folder if it's category list contains folder
-		return 'folder' in doc.category
+		return 'folder' in categories
 
 	@staticmethod
 	def __toName( obj ):

@@ -1,9 +1,12 @@
-from optparse import OptionParser
+from optparse   import OptionParser
+from shlex      import split
+from subprocess import Popen
+from subprocess import PIPE
 
 """ Command line interface for gsvn """
 
-def parseArguments():
-	"""Parses the command line arguments. Returns an object with the passed arguments as fields."""
+def parseArguments( args ):
+	"""Parses list of string arguments. Returns an object with the converted arguments as fields."""
 
 	# init parser
 	usage = """gsvn googleDocsUsername googleDocsPassword svnUsername svnPassword
@@ -25,7 +28,7 @@ def parseArguments():
 	parser.add_option( "-v", "--verbose", help="log messages during run of script", action="store_true", default=True )
 
 	# parse args
-	options, args = parser.parse_args()
+	options, args = parser.parse_args( args )
 
 	# check if there are the right number of arguments
 	if len( args ) != 4:
@@ -43,5 +46,30 @@ def parseArguments():
 	parser.destroy()
 
 	return options
+
+def call( args ):
+	""" Executes a program in the shell.
+		
+		args:		a string to execute in the shell or a sequence that is converted to a string for execution.
+		
+		Returns:	a 3-tuple of the programs return code, the programs standard output as string and it' error output
+					as string.
+					If the program has no standard output, the second part of the tuple will be None.
+					If the program has no error output, the third part of the tuple will be None."""
+
+	if type( args ) == str:
+		args = split( args )
+
+	process  = Popen( args, stdout=PIPE, stderr=PIPE )
+
+	out, err = process.communicate()
+	retCode  = process.poll()
+
+	if len(out) == 0:
+		out = None
+	if len(err) == 0:
+		err = None
+
+	return retCode, out, err
 
 
