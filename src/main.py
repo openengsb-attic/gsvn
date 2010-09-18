@@ -1,24 +1,22 @@
-import cli
-import docs
+from __future__ import print_function
 
-# parse command line arguments
-args = cli.parseArguments()
+from cli  import parseArguments
+from docs import downloadDocs
+from svn  import commitToRepo
 
-# connect to google docs
-googleDocs = docs.DocumentService( args.gDocsUsername, args.gDocsPassword )
+def main( args ):
+	# drop program name from cmd line args and parse them
+	args = parseArguments( args[1:] )
 
-# fetch documents
-if args.gDocsRoot == None:
-	files = googleDocs.getRoot()
-else:
-	files = googleDocs.getFile( args.gDocsRoot )
+	# download files from google docs
+	downloadDocs( args.gDocsUsername, args.gDocsPassword, args.gDocsRoot, args.svnRoot )
 
-# save to repo
-if args.svnRoot == None:
-	googleDocs.saveTo( files, "." )
-else:
-	googleDocs.saveTo( files, args.svnRoot )
+	# commit to svn
+	commitToRepo( args.svnUsername, args.svnPassword, args.svnRoot )
 
-# commit to svn
+# if we this is run as a standalone script execute main
+if __name__ == "__main__":
+	from sys import argv
 
+	main( argv )
 

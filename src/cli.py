@@ -3,13 +3,15 @@ from shlex      import split
 from subprocess import Popen
 from subprocess import PIPE
 
+from docs import ROOT_FOLDER
+
 """ Command line interface for gsvn """
 
 def parseArguments( args ):
 	"""Parses list of string arguments. Returns an object with the converted arguments as fields."""
 
 	# init parser
-	usage = """gsvn googleDocsUsername googleDocsPassword svnUsername svnPassword
+	usage = """gsvn googleDocsUsername googleDocsPassword [svnUsername svnPassword]
      googleDocsUsername  email address of the google user account
      googleDocsPassword  password of the google user account
 
@@ -20,10 +22,10 @@ def parseArguments( args ):
 
 	parser.add_option(
 		"-g", "--gDocsRoot", help="name of the root of the file tree to copy fetch from google docs, default is root folder",
-		type = "string", action="store" )
+		type = "string", action="store", default=ROOT_FOLDER )
 	parser.add_option(
 		"-s", "--svnRoot", help="path to directory into which the google doc file tree shall be copied into, default is current folder",
-		type = "string", action="store" )
+		type = "string", action="store", default="." )
 	
 	parser.add_option( "-v", "--verbose", help="log messages during run of script", action="store_true", default=True )
 
@@ -31,16 +33,21 @@ def parseArguments( args ):
 	options, args = parser.parse_args( args )
 
 	# check if there are the right number of arguments
-	if len( args ) != 4:
-		parser.print_help()
-		print "error: gsvn requires exactly 4 arguments, %d given." % len( args )
-		exit( 2 )
-		
 	# put mandatory arguments into options object for simplicity
-	options.gDocsUsername = args[0]
-	options.gDocsPassword = args[1]
-	options.svnUsername   = args[2]
-	options.svnPassword   = args[3]
+	if len( args ) == 4:
+		options.gDocsUsername = args[0]
+		options.gDocsPassword = args[1]
+		options.svnUsername   = args[2]
+		options.svnPassword   = args[3]
+	elif len( args ) == 2:
+		options.gDocsUsername = args[0]
+		options.gDocsPassword = args[1]
+		options.svnUsername   = None
+		options.svnPassword   = None
+	else:
+		parser.print_help()
+		print "error: gsvn requires exactly 2 or 4 arguments, %d given." % len( args )
+		exit( 2 )
 
 	# dispose of parser
 	parser.destroy()
