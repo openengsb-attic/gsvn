@@ -1,7 +1,7 @@
 from optparse   import OptionParser
 from shlex      import split
 from subprocess import Popen
-from subprocess import PIPE
+from subprocess import PIPE, CalledProcessError
 
 from docs import ROOT_FOLDER
 
@@ -64,6 +64,7 @@ def call( args ):
 					If the program has no standard output, the second part of the tuple will be None.
 					If the program has no error output, the third part of the tuple will be None."""
 
+	# strings have to be split by whitespace for Popen
 	if type( args ) == str:
 		args = split( args )
 
@@ -78,5 +79,37 @@ def call( args ):
 		err = None
 
 	return retCode, out, err
+
+# Exception classes used by this module.
+class GsvnCalledProcessError(CalledProcessError):
+	"""This exception is raised when a process run by checkedCall() returns
+	a non-zero exit status.  The exit status will be stored in the
+	returncode attribute."""
+	def __init__(self, returncode, cmd, errors ):
+		self.returncode = returncode
+		self.cmd        = cmd
+		self.errors     = errors
+	def __str__(self):
+		str = "Command '%s' returned non-zero exit status %d" % (self.cmd, self.returncode)
+
+		if self.errors:
+			str += ": %s" % self.errors
+
+		return str
+		
+def checkedCall( args ):
+	""" Executes a program in the shell. If the program aborts with a non zero return code an exception is raised
+		displaying the contents of the programs stderr
+		
+		args:		a string to execute in the shell or a sequence that is converted to a string for execution.
+		
+		Returns:	the called programs stdout output as string"""
+
+	retCode, out, err = call( args )
+
+	if retCode != 0:
+		raise GsvnCalledProcessError( retCode, args, err )
+		
+	return out
 
 

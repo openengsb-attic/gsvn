@@ -1,31 +1,38 @@
-Usage:
-	gsvn googleDocsUsername googleDocsPassword googleDocsRootFolder svnUsername svnPassword svnRootFolder
+Usage: gsvn googleDocsUsername googleDocsPassword [svnUsername svnPassword]
+     googleDocsUsername  email address of the google user account
+     googleDocsPassword  password of the google user account
 
-		googleDocsUsername		email address of the google user account
-		googleDocsPassword		password of the google user account
-		googleDocsRootFolder	name of the root of the file tree to copy fetch from google docs
+     svnUsername         username for svn repo authentication
+     svnPassword         password for svn repo authentication
 
-		svnUsername				username for svn repo authentication
-		svnPassword				password for svn repo authentication
-		svnRootFolder			path to directory into which the google doc file tree shall be copied into
+Options:
+  -h, --help            show this help message and exit
+  -g GDOCSROOT, --gDocsRoot=GDOCSROOT
+                        name of the root of the file tree to copy fetch from
+                        google docs, default is root folder
+  -s SVNROOT, --svnRoot=SVNROOT
+                        path to directory into which the google doc file tree
+                        shall be copied into, default is current folder
+  -v, --verbose         log messages during run of script
 
 ToDo:
 	- write GoogleDocs api wrapper
 		- error handling code
 		- logging
-		- check function arguments
 		- even more documentation
 	- write SVN api wrapper
-		- commit logic
-		- error handling code
 		- logging
-		- check function arguments
-		- documentation
+		- even more documentation
+		- file names with whitespace other than space, tab or newline in them will probably not be added/committed.
 	- write proper CLI with argument parsing
 		- even more documentation
 
+	- make verbose flag globally available and log when it is set
+	- testing, testing, testing
+	
 Dependencies:
 	- you have to have the Google List Data Python API 3.0 on your PYTHONPATH
+	- you have to have commmand line svn installed
 
 Design Rationale:
 	Observations on GoogleDocs/traditional-file-system concept mismatch:
@@ -37,5 +44,8 @@ Design Rationale:
 				Luckily all the nodes of a DAG visited in a depth first search (DFS) form a tree.
 				So the files saved to the SVN repo from google docs will be the result of traversing a users GoogleDocs
 				categories/folders depth-first from a user defined start node.
+	I couldn't find python svn bindings I could get to work, so svn interop is done via process creation and screenscraping.
+	Easier than it looks.
+
 
 

@@ -12,7 +12,7 @@ def main( args ):
 	downloadDocs( args.gDocsUsername, args.gDocsPassword, args.gDocsRoot, args.svnRoot )
 
 	# commit to svn
-	commitToRepo( args.svnUsername, args.svnPassword, args.svnRoot )
+	commitToRepo( args.svnRoot, args.svnUsername, args.svnPassword )
 
 # if we this is run as a standalone script execute main
 if __name__ == "__main__":
